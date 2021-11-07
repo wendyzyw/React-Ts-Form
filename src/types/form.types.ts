@@ -1,4 +1,4 @@
-import { ResponseMessage } from "../components/request-form-modal/RequestForm";
+import { ResponseMessage } from "../components/request-form-modal/RequestFormModal";
 
 export interface IFieldProps {
     id: string;

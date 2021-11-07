@@ -1,6 +1,6 @@
-import { FC, useReducer } from "react"
+import { FC, useEffect, useReducer } from "react"
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material"
-import { RequestForm, ResponseError, ResponseMessage } from "./RequestForm";
+import { RequestForm } from "./RequestForm";
 import { repeatedFieldMatches, validEmail, validLength } from "./validation";
 import { IFields, IValues } from "../../types";
 import config from "../../config/config.json";
@@ -35,7 +35,13 @@ export enum ACTION_TYPE {
 
 export enum REQUEST_STATUS {
     IDLE, PENDING, SUCCESS, ERROR
-}   
+}
+
+export interface ResponseError {
+    errorMessage: string;
+}
+
+export type ResponseMessage = string | ResponseError;
 
 export const RequestFormModal: FC<RequestFormModalProps> = ({
     modalOpen,
@@ -143,6 +149,15 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
         }
         return msg;
     }
+
+    useEffect(() => {
+        if (state.status === REQUEST_STATUS.SUCCESS) {
+            setTimeout(() => {
+                setModalOpen(false);
+                dispatch({ type: ACTION_TYPE.RESET });
+            }, 2000);
+        }
+    }, [state, setModalOpen]);
 
     return (
         <Dialog

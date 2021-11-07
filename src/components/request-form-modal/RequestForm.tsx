@@ -9,20 +9,6 @@ import { requiredField } from "./validation";
  */
 export const FormContext = createContext<IFormContext | undefined>(undefined);
 
-/**
- * Execute all validation rules for all fields on the form and sets the error state 
- * @returns {boolean} - a flag indicating whether form is valid 
- */
-// const validateForm: boolean = () => {
-//     return true;
-// }
-
-export interface ResponseError {
-    errorMessage: string;
-}
-
-export type ResponseMessage = string | ResponseError;
-
 export const RequestForm: FC<IFormProps> = ({
     fields,
     submitRequest
