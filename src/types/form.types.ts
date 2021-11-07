@@ -45,8 +45,6 @@ export interface IFormState {
     values: IValues,
     /* field validation errors */
     errors: IErrors;
-    /* whether form can be submitted successfully */
-    submitSuccess?: boolean;
 }
 
 export interface IFormContext extends IFormState {

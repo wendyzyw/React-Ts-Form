@@ -51,10 +51,6 @@ export const RequestForm: FC<IFormProps> = ({
         validate: validateField,
     }
 
-    /**
-     * Return boolean indicating whether or not the current form object contains errors
-     * @param {IErrors} errors - Field errors  
-     */
     const hasErrors = (errors: IErrors): boolean => {
         return Object.keys(errors).some((key: string) => (typeof errors[key]) !== 'undefined');
     }
