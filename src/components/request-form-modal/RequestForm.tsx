@@ -1,42 +1,7 @@
 import { Button } from "@mui/material";
 import { createContext, FC, useState } from "react";
-import { FormTextField, IFieldProps } from "./FormTextField";
-
-export interface IFields {
-    [key: string]: IFieldProps;
-}
-
-export interface IValues {
-    /* key value pairs for all field values */
-    [key: string]: any;
-}
-
-export interface IErrors {
-    /* Validation error message for each field */
-    [key: string]: string;
-}
-
-export interface IFormProps {
-    /* The endpoint that the form will be posted to */ 
-    endpoint?: string,
-    /* All form fields */
-    fields: IFields,
-}
-
-export interface IFormState {
-    /* field values */
-    values: IValues,
-    /* field validation errors */
-    errors: IErrors;
-    /* whether form can be submitted successfully */
-    submitSuccess?: boolean;
-}
-
-export interface IFormContext extends IFormState {
-    setValues: (values: IValues) => void;
-
-    validate: (fieldName: string) => string;
-}
+import { IErrors, IFormContext, IFormProps, IValues } from "../../types";
+import { FormTextField } from "./FormTextField";
 
 /**
  * Context to allow state and functions to be shared across FormTextFields 
@@ -86,10 +51,9 @@ export const RequestForm: FC<IFormProps> = ({
      * @param {IErrors} errors - Field errors  
      */
     const hasErrors = (errors: IErrors): boolean => {
-        return Object.keys(errors).some((key: string) => errors[key] !== null);
+        return Object.keys(errors).some((key: string) => typeof errors[key] !== undefined);
     }
 
-    
     console.log(endpoint);
 
     return (

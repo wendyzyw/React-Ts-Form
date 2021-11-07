@@ -1,7 +1,8 @@
 import { FC } from "react"
 import { Dialog, DialogContent, DialogTitle } from "@mui/material"
-import { IFields, RequestForm } from "./RequestForm";
+import { RequestForm } from "./RequestForm";
 import { validEmail, validLength } from "./validation";
+import { IFields } from "../../types";
 
 export interface RequestFormModalProps {
     /* form modal state */
