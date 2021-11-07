@@ -7,6 +7,7 @@ export const FormTextField: FC<IFieldProps> = ({
     id,
     label,
     type,
+    required=false,
     validation=null
 }) => {
     const { values, errors, setValues, validate } = useContext(FormContext);
@@ -19,16 +20,15 @@ export const FormTextField: FC<IFieldProps> = ({
             type={type}
             label={label}
             value={values[id] || ''}
-            autoFocus
+            required={required}
             variant="outlined"
             margin="dense"
             fullWidth
-            required={true}
             error={hasError}
             helperText={hasError ? errors[id] : ""}
             onChange={
                 (e: FormEvent<HTMLTextAreaElement|HTMLInputElement>) =>
-                    setValues({ [id]: e.currentTarget.value })    
+                    setValues({ ...values, [id]: e.currentTarget.value })    
             }
             onBlur={() => validate(id)}
         />

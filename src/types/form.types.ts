@@ -5,12 +5,15 @@ export interface IFieldProps {
 
     type: string;
 
+    required?: boolean;
+
     /* The validation rule & arg for this field */
     validation?: IValidation;
 }
 
+export type IValidationRule = (value: IValues, fieldName: string, args?: any) => string | undefined;
 export interface IValidation {
-    rule: (value: IValues, fieldName: string, args: any) => string | undefined;
+    rule: IValidationRule;
     args?: any;
 }
 
@@ -25,7 +28,7 @@ export interface IValues {
 
 export interface IErrors {
     /* Validation error message for each field */
-    [key: string]: string;
+    [key: string]: string | undefined;
 }
 
 export interface IFormProps {

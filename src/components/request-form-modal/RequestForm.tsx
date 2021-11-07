@@ -1,7 +1,8 @@
 import { Button } from "@mui/material";
-import { createContext, FC, useState } from "react";
-import { IErrors, IFormContext, IFormProps, IValues } from "../../types";
+import { createContext, FC, FormEvent, useState } from "react";
+import { IErrors, IFormContext, IFormProps, IValidationRule, IValues } from "../../types";
 import { FormTextField } from "./FormTextField";
+import { requiredField } from "./validation";
 
 /**
  * Context to allow state and functions to be shared across FormTextFields 
@@ -23,27 +24,39 @@ export const RequestForm: FC<IFormProps> = ({
     const [values, setValues] = useState<IValues>({});
     const [errors, setErrors] = useState<IErrors>({});
 
-    const validate = (fieldName: string): string => {
-        let error = "";
-        if (
-            fields[fieldName] &&
-            fields[fieldName].validation
-        ) {
-            error = fields[fieldName].validation!.rule(
-                values,
-                fieldName,
-                fields[fieldName].validation!.args);
+    const validateField = (fieldName: string, validationRule?: IValidationRule): string => {
+        let error = undefined;
+        if (fields[fieldName]) {
+            if (validationRule) {
+                error = validationRule(values, fieldName);
+            } else if (fields[fieldName].validation) {
+                error = fields[fieldName].validation!.rule(
+                    values,
+                    fieldName,
+                    fields[fieldName].validation!.args);
+            }
         }
         errors[fieldName] = error;
         setErrors({ ...errors, [fieldName]: error });
         return error;
     }
 
+    const validateForm = (): boolean => {
+        let hasError: boolean = false;
+        Object.keys(fields).forEach((fieldName: string) => {
+            if (fields[fieldName].required) {
+                const error = validateField(fieldName, requiredField);
+                if (typeof error !== 'undefined') hasError = true;
+            }
+        });
+        return hasError;
+    }
+
     const context: IFormContext = {
         values: values,
         errors: errors,
         setValues: setValues,
-        validate: validate,
+        validate: validateField,
     }
 
     /**
@@ -51,7 +64,17 @@ export const RequestForm: FC<IFormProps> = ({
      * @param {IErrors} errors - Field errors  
      */
     const hasErrors = (errors: IErrors): boolean => {
-        return Object.keys(errors).some((key: string) => typeof errors[key] !== undefined);
+        return Object.keys(errors).some((key: string) => (typeof errors[key]) !== 'undefined');
+    }
+
+    const handleSubmit = async(
+        e: FormEvent<HTMLFormElement>
+    ): Promise<void> => {
+        
+        e.preventDefault();
+        if (validateForm()) {
+            console.log("error");
+        }
     }
 
     console.log(endpoint);
@@ -59,6 +82,7 @@ export const RequestForm: FC<IFormProps> = ({
     return (
         <FormContext.Provider value={context}>
             <form
+                onSubmit={handleSubmit}
                 noValidate={true}
             >
                 <FormTextField {...fields.fullname} />
