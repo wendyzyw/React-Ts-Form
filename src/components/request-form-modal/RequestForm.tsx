@@ -75,6 +75,7 @@ export const RequestForm: FC<IFormProps> = ({
                 <FormTextField {...fields.email} />
                 <FormTextField {...fields.confirmEmail} />
                 <Button
+                    id={"request-form-submit-btn"}
                     disabled={hasErrors(errors)}
                     variant="contained"
                     type="submit"

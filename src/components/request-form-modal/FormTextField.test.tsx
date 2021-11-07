@@ -20,7 +20,7 @@ describe("component: FormTextField", function () {
         expect(label.prop('htmlFor')).toEqual('name');
         expect(label.text()).toEqual("Full name");
 
-        const input = wrapper.find('ForwardRef(OutlinedInput)');
+        const input = wrapper.find('#name');
         expect(input).toHaveLength(1);
         expect(input.prop('type')).toEqual('text');
         expect(input.prop('id')).toEqual('name');
