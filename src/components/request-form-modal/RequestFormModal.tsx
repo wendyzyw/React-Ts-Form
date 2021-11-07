@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@mui/material"
 import { RequestForm } from "./RequestForm";
 import { repeatedFieldMatches, validEmail, validLength } from "./validation";
 import { IFields } from "../../types";
+import config from "../../config/config.json";
 
 export interface RequestFormModalProps {
     /* form modal state */
@@ -16,8 +17,8 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
 }) => {
 
     const fields: IFields = {
-        fullname: {
-            id: "fullname",
+        name: {
+            id: "name",
             label: "Full name",
             type: "text",
             required: true,
@@ -47,7 +48,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
             <DialogTitle>Request an invite</DialogTitle>
             <p>Form</p>
             <DialogContent>
-                <RequestForm endpoint="" fields={fields} />
+                <RequestForm endpoint={config.FORM_SUBMIT_API_ENDPOINT} fields={fields} />
             </DialogContent>
         </Dialog>
     )
