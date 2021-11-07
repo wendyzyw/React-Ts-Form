@@ -19,15 +19,6 @@ export interface IModalContentState {
     buttonText?: string;
     buttonAction?: () => void;
 }
-
-export enum ACTION_TYPE {
-    STARTED, SUCCESS, ERROR
-}
-
-export enum REQUEST_STATUS {
-    IDLE, PENDING, SUCCESS, ERROR
-}
-
 export interface IModalContentChangeAction {
     /* action type */
     type: ACTION_TYPE;
@@ -37,49 +28,68 @@ export interface IModalContentChangeAction {
     successMsg?: string;
 }
 
-const requestStatusReducer = (
-    state: IModalContentState,
-    action: IModalContentChangeAction
-): IModalContentState => {
-    switch (action.type) {
-        case ACTION_TYPE.ERROR: {
-            return {
-                ...state,
-                status: REQUEST_STATUS.ERROR,
-                bodyText: action.error,
-                buttonText: "Retry",
-                titleText: "Oooop ... something seems off!",
-            }
-        }
-        case ACTION_TYPE.SUCCESS: {
-            return {
-                ...state,
-                status: REQUEST_STATUS.SUCCESS,
-                bodyText: action.successMsg,
-                buttonText: "Ok",
-                titleText: "All done!",
-            }
-        }
-        case ACTION_TYPE.STARTED: {
-            return {
-                ...state,
-                status: REQUEST_STATUS.PENDING,
-                bodyText: "....",
-                buttonText: "Request being submitted...",
-            }
-        }
-        default:
-            return state;
-    }
-  }
+export enum ACTION_TYPE {
+    STARTED, SUCCESS, ERROR, RESET
+}
+
+export enum REQUEST_STATUS {
+    IDLE, PENDING, SUCCESS, ERROR
+}   
 
 export const RequestFormModal: FC<RequestFormModalProps> = ({
     modalOpen,
     setModalOpen,
 }) => {
+    const requestStatusReducer = (
+        state: IModalContentState,
+        action: IModalContentChangeAction
+    ): IModalContentState => {
+        switch (action.type) {
+            case ACTION_TYPE.ERROR: {
+                return {
+                    ...state,
+                    status: REQUEST_STATUS.ERROR,
+                    bodyText: action.error,
+                    buttonText: "Retry",
+                    buttonAction: () => dispatch({ type: ACTION_TYPE.RESET }),
+                    titleText: "Oooop ... something seems off!",
+                }
+            }
+            case ACTION_TYPE.SUCCESS: {
+                return {
+                    ...state,
+                    status: REQUEST_STATUS.SUCCESS,
+                    bodyText: action.successMsg,
+                    buttonText: "Ok",
+                    buttonAction: () => setModalOpen(false),
+                    titleText: "All done!",
+                }
+            }
+            case ACTION_TYPE.STARTED: {
+                return {
+                    ...state,
+                    status: REQUEST_STATUS.PENDING,
+                    bodyText: "....",
+                    buttonText: "Request being submitted...",
+                }
+            }
+            case ACTION_TYPE.RESET: {
+                return {
+                    ...state,
+                    status: REQUEST_STATUS.IDLE,
+                    titleText: "Request an invite"
+                }
+            }
+            default:
+                return state;
+        }
+    }
+    
     const [state, dispatch] = useReducer(requestStatusReducer, {
         status: REQUEST_STATUS.IDLE,
-        titleText: "Request an invite"
+        bodyText: "",
+        titleText: "Request an invite",
+        buttonText: ""
     })
 
     const fields: IFields = {
@@ -117,9 +127,15 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
         });
         const msg = await response.json();
         if (!response.ok) {
-            dispatch({ type: ACTION_TYPE.ERROR, error: (msg as ResponseError).errorMessage })
+            dispatch({
+                type: ACTION_TYPE.ERROR,
+                error: (msg as ResponseError).errorMessage
+            })
         } else {
-            dispatch({ type: ACTION_TYPE.SUCCESS, successMsg: "Your request has been sent successfully! " })
+            dispatch({
+                type: ACTION_TYPE.SUCCESS,
+                successMsg: "Your request has been sent successfully! "
+            })
         }
         return msg;
     }
@@ -139,16 +155,21 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                     />
                 }
                 {
-                    ( state.status === REQUEST_STATUS.SUCCESS || state.status === REQUEST_STATUS.ERROR || state.status === REQUEST_STATUS.PENDING ) &&
-                    <div>
-                        <p>{state.bodyText}</p>
-                        <Button
-                            variant="contained"
+                    (   state.status === REQUEST_STATUS.SUCCESS ||
+                        state.status === REQUEST_STATUS.ERROR   ||
+                        state.status === REQUEST_STATUS.PENDING )
+                    &&
+                        <div>
+                            <p>{state.bodyText}</p>
+                            <Button
+                                disabled={state.status===REQUEST_STATUS.PENDING}
+                                variant="contained"
                             style={{ textTransform: "none", padding: "10px 40px", width: "100%", marginTop: "20px" }}
-                        >
-                            {state.buttonText}
-                        </Button>
-                    </div>
+                            onClick={state.buttonAction}
+                            >
+                                {state.buttonText}
+                            </Button>
+                        </div>
                 }
             </DialogContent>
         </Dialog>
