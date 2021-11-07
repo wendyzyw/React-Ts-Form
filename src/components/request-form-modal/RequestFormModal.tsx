@@ -40,6 +40,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
     modalOpen,
     setModalOpen,
 }) => {
+
     const requestStatusReducer = (
         state: IModalContentState,
         action: IModalContentChangeAction
@@ -61,7 +62,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                     status: REQUEST_STATUS.SUCCESS,
                     bodyText: action.successMsg,
                     buttonText: "Ok",
-                    buttonAction: () => setModalOpen(false),
+                    buttonAction: () => { setModalOpen(false); dispatch({ type: ACTION_TYPE.RESET }) },
                     titleText: "All done!",
                 }
             }
@@ -143,7 +144,10 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
     return (
         <Dialog
             open={modalOpen}
-            onClose={() => setModalOpen(false)}
+            onClose={() => {
+                setModalOpen(false);
+                dispatch({ type: ACTION_TYPE.RESET });
+            }}
         >
             <DialogTitle>{state.titleText}</DialogTitle>
             <DialogContent>
