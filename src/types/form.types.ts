@@ -1,3 +1,5 @@
+import { ResponseMessage } from "../components/request-form-modal/RequestForm";
+
 export interface IFieldProps {
     id: string;
 
@@ -32,10 +34,10 @@ export interface IErrors {
 }
 
 export interface IFormProps {
-    /* The endpoint that the form will be posted to */ 
-    endpoint?: string,
     /* All form fields */
     fields: IFields,
+    /* function to handle submit request */
+    submitRequest: (values: IValues) => Promise<ResponseMessage>
 }
 
 export interface IFormState {
