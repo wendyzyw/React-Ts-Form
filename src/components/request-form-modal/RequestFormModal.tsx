@@ -1,15 +1,39 @@
 import { FC } from "react"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Dialog, DialogContent, DialogTitle } from "@mui/material"
+import { IFields, RequestForm } from "./RequestForm";
+import { validEmail, validLength } from "./validation";
 
 export interface RequestFormModalProps {
+    /* form modal state */
     modalOpen: boolean,
-    setModalOpen: (value: boolean) => void
+    setModalOpen: (value: boolean) => void,
 }
 
 export const RequestFormModal: FC<RequestFormModalProps> = ({
     modalOpen,
     setModalOpen,
 }) => {
+
+    const fields: IFields = {
+        fullname: {
+            id: "fullname",
+            label: "Full name",
+            type: "text",
+            validation: { rule: validLength, args: 3 }
+        },
+        email: {
+            id: "email",
+            label: "Email",
+            type: "email",
+            validation: { rule: validEmail }
+        },
+        confirmEmail: {
+            id: "confirmEmail",
+            label: "Confirm email",
+            type: "email",
+        }
+    }
+
     return (
         <Dialog
             open={modalOpen}
@@ -18,41 +42,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
             <DialogTitle>Request an invite</DialogTitle>
             <p>Form</p>
             <DialogContent>
-                <TextField
-                    autoFocus
-                    id="fullname"
-                    label="Full name"
-                    type="text"
-                    variant="outlined"
-                    margin="dense"
-                    fullWidth
-                />
-                <TextField
-                    autoFocus
-                    id="email"
-                    label="Email"
-                    type="email"
-                    variant="outlined"
-                    margin="dense"
-                    fullWidth
-                />
-                <TextField
-                    autoFocus
-                    id="confirmEmail"
-                    label="Confirm email"
-                    type="email"
-                    variant="outlined"
-                    margin="dense"
-                    fullWidth
-                />
-                <DialogActions>
-                    <Button
-                        variant="contained"
-                        style={{ textTransform: "none", padding: "10px 40px", width: "100%" }}
-                    >
-                        Submit
-                    </Button>
-                </DialogActions>
+                <RequestForm endpoint="" fields={fields} />
             </DialogContent>
         </Dialog>
     )
