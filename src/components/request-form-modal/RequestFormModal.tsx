@@ -4,6 +4,7 @@ import { RequestForm, ResponseError, ResponseMessage } from "./RequestForm";
 import { repeatedFieldMatches, validEmail, validLength } from "./validation";
 import { IFields, IValues } from "../../types";
 import config from "../../config/config.json";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export interface RequestFormModalProps {
     /* form modal state */
@@ -70,7 +71,8 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                 return {
                     ...state,
                     status: REQUEST_STATUS.PENDING,
-                    bodyText: "....",
+                    titleText: "Request an invite",
+                    bodyText: "",
                     buttonText: "Request being submitted...",
                 }
             }
@@ -78,7 +80,8 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                 return {
                     ...state,
                     status: REQUEST_STATUS.IDLE,
-                    titleText: "Request an invite"
+                    titleText: "Request an invite",
+                    bodyText: ""
                 }
             }
             default:
@@ -165,6 +168,11 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                     &&
                         <div>
                             <p>{state.bodyText}</p>
+                            {state.status === REQUEST_STATUS.PENDING &&
+                                <div style={{display: "flex", justifyContent: "space-around"}}>
+                                    <ClipLoader color={"#465461"} loading={state.status === REQUEST_STATUS.PENDING} size={150} />
+                                </div>
+                            }
                             <Button
                                 disabled={state.status===REQUEST_STATUS.PENDING}
                                 variant="contained"
