@@ -52,6 +52,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
         state: IModalContentState,
         action: IModalContentChangeAction
     ): IModalContentState => {
+        
         switch (action.type) {
             case ACTION_TYPE.ERROR: {
                 return {
