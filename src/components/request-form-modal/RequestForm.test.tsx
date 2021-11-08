@@ -21,7 +21,7 @@ describe("component: RequestForm", function () {
         });
     });
 
-    it ("should render supplied input fields and submit button", () => {
+    it ("should render supplied input fields", () => {
         const mockSubmitRequest = jest.fn();
         const mockProps = {
             id: "test",
@@ -32,6 +32,5 @@ describe("component: RequestForm", function () {
             <RequestForm {...mockProps} />
         );
         expect(screen.getByLabelText("Email")).toBeInTheDocument();
-        expect(screen.getByDisplayValue("Submit")).toBeInTheDocument();
     });
 });

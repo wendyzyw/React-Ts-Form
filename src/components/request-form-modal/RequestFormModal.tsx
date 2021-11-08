@@ -173,7 +173,7 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                 dispatch({ type: ACTION_TYPE.RESET });
             }}
         >
-            <DialogTitle id="modal-title">{state.titleText}</DialogTitle>
+            <DialogTitle data-testid="modal-title">{state.titleText}</DialogTitle>
             <DialogContent>
                 {
                     ( state.status === REQUEST_STATUS.IDLE ) &&
