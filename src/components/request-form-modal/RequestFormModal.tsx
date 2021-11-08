@@ -167,6 +167,7 @@ export const RequestFormModal: FC = () => {
     return (
         <>
             <Button
+                data-testid="modal-control-btn"
                 variant="contained"
                 className="button-fullwidth"
                 onClick={() => setModalOpen(true)}
@@ -174,11 +175,9 @@ export const RequestFormModal: FC = () => {
                 Request an invite
             </Button>
             <Dialog
-                id="modal-wrapper"
+                data-testid="modal-wrapper"
                 open={modalOpen}
-                onClose={() => {
-                    setModalOpen(false);
-                }}
+                onClose={() => setModalOpen(false)}
             >
                 <DialogTitle data-testid="modal-title">{state.titleText}</DialogTitle>
                 <DialogContent>
@@ -195,7 +194,7 @@ export const RequestFormModal: FC = () => {
                             state.status === REQUEST_STATUS.ERROR   ||
                             state.status === REQUEST_STATUS.PENDING )
                         &&
-                            <div>
+                            <div data-testid="modal-content">
                                 <p>{state.bodyText}</p>
                                 {state.status === REQUEST_STATUS.PENDING &&
                                     <div className="loader-wrapper">
