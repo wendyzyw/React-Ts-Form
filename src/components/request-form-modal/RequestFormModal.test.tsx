@@ -3,10 +3,9 @@ import { RequestFormModal } from ".";
 
 describe("component: RequestFormModal", () => {
 
-    const setModalOpenMock = jest.fn();
     const setup = () => {
         render(
-            <RequestFormModal modalOpen={true} setModalOpen={setModalOpenMock} />   
+            <RequestFormModal />   
         );
     }
 

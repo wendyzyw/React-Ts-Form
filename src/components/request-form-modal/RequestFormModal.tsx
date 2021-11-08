@@ -1,16 +1,10 @@
-import { FC, useEffect, useReducer } from "react"
+import { FC, useEffect, useReducer, useState } from "react";
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material"
 import { RequestForm } from "./RequestForm";
 import { repeatedFieldMatches, validEmail, validLength } from "./validation";
 import { IFields, IValues } from "../../types";
 import config from "../../config/config.json";
 import ClipLoader from "react-spinners/ClipLoader";
-
-export interface RequestFormModalProps {
-    /* form modal state */
-    modalOpen: boolean,
-    setModalOpen: (value: boolean) => void,
-}
 
 export interface IModalContentState {
     status: REQUEST_STATUS;
@@ -44,10 +38,9 @@ export interface ResponseError {
 
 export type ResponseMessage = string | ResponseError;
 
-export const RequestFormModal: FC<RequestFormModalProps> = ({
-    modalOpen,
-    setModalOpen,
-}) => {
+export const RequestFormModal: FC = () => {
+    
+    const [ modalOpen, setModalOpen ] = useState(false);
 
     const requestStatusReducer = (
         state: IModalContentState,
@@ -165,48 +158,57 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
     }, [state, setModalOpen]);
 
     return (
-        <Dialog
-            id="modal-wrapper"
-            open={modalOpen}
-            onClose={() => {
-                setModalOpen(false);
-                dispatch({ type: ACTION_TYPE.RESET });
-            }}
-        >
-            <DialogTitle data-testid="modal-title">{state.titleText}</DialogTitle>
-            <DialogContent>
-                {
-                    ( state.status === REQUEST_STATUS.IDLE ) &&
-                    <RequestForm
-                        id="modal-form"
-                        fields={fields}
-                        submitRequest={submitRequest}
-                    />
-                }
-                {
-                    (   state.status === REQUEST_STATUS.SUCCESS ||
-                        state.status === REQUEST_STATUS.ERROR   ||
-                        state.status === REQUEST_STATUS.PENDING )
-                    &&
-                        <div>
-                            <p>{state.bodyText}</p>
-                            {state.status === REQUEST_STATUS.PENDING &&
-                                <div className="loader-wrapper">
-                                    <ClipLoader color={"#465461"} loading={state.status === REQUEST_STATUS.PENDING} size={150} />
-                                </div>
-                            }
-                            <Button
-                                data-testid="modal-btn"
-                                disabled={state.status===REQUEST_STATUS.PENDING}
-                                variant="contained"
-                                className="form-btn"
-                                onClick={state.buttonAction}
-                            >
-                                {state.buttonText}
-                            </Button>
-                        </div>
-                }
-            </DialogContent>
-        </Dialog>
+        <>
+            <Button
+                variant="contained"
+                className="button-fullwidth"
+                onClick={() => setModalOpen(true)}
+            >
+                Request an invite
+            </Button>
+            <Dialog
+                id="modal-wrapper"
+                open={modalOpen}
+                onClose={() => {
+                    setModalOpen(false);
+                    dispatch({ type: ACTION_TYPE.RESET });
+                }}
+            >
+                <DialogTitle data-testid="modal-title">{state.titleText}</DialogTitle>
+                <DialogContent>
+                    {
+                        ( state.status === REQUEST_STATUS.IDLE ) &&
+                        <RequestForm
+                            id="modal-form"
+                            fields={fields}
+                            submitRequest={submitRequest}
+                        />
+                    }
+                    {
+                        (   state.status === REQUEST_STATUS.SUCCESS ||
+                            state.status === REQUEST_STATUS.ERROR   ||
+                            state.status === REQUEST_STATUS.PENDING )
+                        &&
+                            <div>
+                                <p>{state.bodyText}</p>
+                                {state.status === REQUEST_STATUS.PENDING &&
+                                    <div className="loader-wrapper">
+                                        <ClipLoader color={"#465461"} loading={state.status === REQUEST_STATUS.PENDING} size={150} />
+                                    </div>
+                                }
+                                <Button
+                                    data-testid="modal-btn"
+                                    disabled={state.status===REQUEST_STATUS.PENDING}
+                                    variant="contained"
+                                    className="form-btn"
+                                    onClick={state.buttonAction}
+                                >
+                                    {state.buttonText}
+                                </Button>
+                            </div>
+                    }
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }
