@@ -66,7 +66,6 @@ export const RequestFormModal: FC = () => {
                     buttonText: "Ok",
                     buttonAction: () => {
                         setModalOpen(false);
-                        dispatch({ type: ACTION_TYPE.RESET })
                     },
                     titleText: "All done!",
                 }
@@ -152,10 +151,18 @@ export const RequestFormModal: FC = () => {
         if (state.status === REQUEST_STATUS.SUCCESS) {
             setTimeout(() => {
                 setModalOpen(false);
-                dispatch({ type: ACTION_TYPE.RESET });
             }, 2000);
         }
     }, [state, setModalOpen]);
+
+    // with a short delay after modal is closed, reset the modal to it's original state with form 
+    useEffect(() => {
+        if (!modalOpen) {
+            setTimeout(() => {
+                dispatch({ type: ACTION_TYPE.RESET });
+             }, 100);
+        }
+    }, [modalOpen]);
 
     return (
         <>
@@ -171,7 +178,6 @@ export const RequestFormModal: FC = () => {
                 open={modalOpen}
                 onClose={() => {
                     setModalOpen(false);
-                    dispatch({ type: ACTION_TYPE.RESET });
                 }}
             >
                 <DialogTitle data-testid="modal-title">{state.titleText}</DialogTitle>
