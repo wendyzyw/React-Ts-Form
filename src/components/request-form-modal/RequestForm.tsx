@@ -10,12 +10,19 @@ import { requiredField } from "./validation";
 export const FormContext = createContext<IFormContext | undefined>(undefined);
 
 export const RequestForm: FC<IFormProps> = ({
+    id,
     fields,
     submitRequest
 }) => {
     const [values, setValues] = useState<IValues>({});
     const [errors, setErrors] = useState<IErrors>({});
 
+    /**
+     * perform validation rule to a specific field 
+     * @param {string} fieldName 
+     * @param {IValidationRule} validationRule 
+     * @returns {string} 
+     */
     const validateField = (fieldName: string, validationRule?: IValidationRule): string => {
         let error = undefined;
         if (fields[fieldName]) {
@@ -33,6 +40,10 @@ export const RequestForm: FC<IFormProps> = ({
         return error;
     }
 
+    /**
+     * perform validation rule on an entire form checking for required fields 
+     * @returns {boolean}
+     */
     const validateForm = (): boolean => {
         let hasError: boolean = false;
         Object.keys(fields).forEach((fieldName: string) => {
@@ -44,17 +55,20 @@ export const RequestForm: FC<IFormProps> = ({
         return !hasError;
     }
 
-    const context: IFormContext = {
-        values: values,
-        errors: errors,
-        setValues: setValues,
-        validate: validateField,
-    }
-
+    /**
+     * check whether or not current form has any errors in any fields 
+     * @param {IErrors} errors 
+     * @returns {boolean}
+     */
     const hasErrors = (errors: IErrors): boolean => {
         return Object.keys(errors).some((key: string) => (typeof errors[key]) !== 'undefined');
     }
-
+    
+    /**
+     * triggered when submit button is hit 
+     * @param {FormEvent} e
+     * @returns {Promise<void>}
+     */
     const handleSubmit = async (
         e: FormEvent<HTMLFormElement>
     ): Promise<void> => {
@@ -65,9 +79,17 @@ export const RequestForm: FC<IFormProps> = ({
         }
     }
 
+    const context: IFormContext = {
+        values: values,
+        errors: errors,
+        setValues: setValues,
+        validate: validateField,
+    }
+
     return (
         <FormContext.Provider value={context}>
             <form
+                id={id}
                 onSubmit={handleSubmit}
                 noValidate={true}
             >
@@ -75,11 +97,11 @@ export const RequestForm: FC<IFormProps> = ({
                 <FormTextField {...fields.email} />
                 <FormTextField {...fields.confirmEmail} />
                 <Button
-                    id={"request-form-submit-btn"}
+                    data-testid="submit-btn"
+                    className="form-btn"
                     disabled={hasErrors(errors)}
                     variant="contained"
                     type="submit"
-                    style={{ textTransform: "none", padding: "10px 40px", width: "100%", marginTop: "20px" }}
                 >
                     Submit
                 </Button>

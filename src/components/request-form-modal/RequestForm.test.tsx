@@ -1,27 +1,37 @@
-import React from 'react';
-import { shallow } from "enzyme";
 import { RequestForm } from ".";
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe("component: RequestForm", function () {
 
-    let wrapper: any;
-    
-    beforeEach(() => {
-        wrapper = shallow(
-            <RequestForm fields={{ name: { id: 'name', type: 'text', label: 'Full name' } }} submitRequest={null} />
-        ).dive();
-    })
+    it("should call submitRequest if bypassing validation", async () => {
+        const mockSubmitRequest = jest.fn();
+        const mockProps = {
+            id: "test",
+            fields: { name: { id: 'name', type: 'text', label: 'Full name' } },
+            submitRequest: mockSubmitRequest
+        };
+        render(
+            <RequestForm {...mockProps} />
+        );
 
-    it("should have text field and button component", async function () {
-        const setValues = jest.fn();
-        const setErrors = jest.fn();
-        const useStateSpy = jest.spyOn(React, 'useState');
-        useStateSpy.mockImplementation(() => [{ name: '' }, setValues]);
-        useStateSpy.mockImplementation(() => [{ name: undefined }, setErrors]);
+        userEvent.click(screen.getByTestId("submit-btn"));
+        await waitFor(() => {
+            expect(mockProps.submitRequest).toHaveBeenCalledTimes(1);
+        });
+    });
 
-        const button = wrapper.find('#request-form-submit-btn');
-        const input = wrapper.find('#name');
-        expect(button).toHaveLength(1);
-        expect(input).toHaveLength(1);
+    it ("should render supplied input fields and submit button", () => {
+        const mockSubmitRequest = jest.fn();
+        const mockProps = {
+            id: "test",
+            fields: { email: { id: 'email', type: 'email', label: 'Email' } },
+            submitRequest: mockSubmitRequest
+        };
+        render(
+            <RequestForm {...mockProps} />
+        );
+        expect(screen.getByLabelText("Email")).toBeInTheDocument();
+        expect(screen.getByDisplayValue("Submit")).toBeInTheDocument();
     });
 });

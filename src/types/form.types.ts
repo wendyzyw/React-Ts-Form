@@ -34,6 +34,7 @@ export interface IErrors {
 }
 
 export interface IFormProps {
+    id: string,
     /* All form fields */
     fields: IFields,
     /* function to handle submit request */

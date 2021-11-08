@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { RequestFormModal } from "../request-form-modal/RequestFormModal";
 
 const LandingPage = () => {
-    const [ modalOpen, setModalOpen] = useState(false);
+    const [ modalOpen, setModalOpen ] = useState(false);
 
     return (
         <div id="main-content">
@@ -14,7 +14,7 @@ const LandingPage = () => {
                 <p>Be the first to know when we launch.</p>
                 <Button
                     variant="contained"
-                    style={{ textTransform: "none", padding: "10px 40px" }}
+                    className="button-fullwidth"
                     onClick={() => setModalOpen(true)}
                 >
                     Request an invite

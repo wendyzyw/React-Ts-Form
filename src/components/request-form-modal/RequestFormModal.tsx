@@ -38,6 +38,7 @@ export enum REQUEST_STATUS {
 }
 
 export interface ResponseError {
+    /* error field from response */
     errorMessage: string;
 }
 
@@ -70,7 +71,10 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                     status: REQUEST_STATUS.SUCCESS,
                     bodyText: action.successMsg,
                     buttonText: "Ok",
-                    buttonAction: () => { setModalOpen(false); dispatch({ type: ACTION_TYPE.RESET }) },
+                    buttonAction: () => {
+                        setModalOpen(false);
+                        dispatch({ type: ACTION_TYPE.RESET })
+                    },
                     titleText: "All done!",
                 }
             }
@@ -162,17 +166,19 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
 
     return (
         <Dialog
+            id="modal-wrapper"
             open={modalOpen}
             onClose={() => {
                 setModalOpen(false);
                 dispatch({ type: ACTION_TYPE.RESET });
             }}
         >
-            <DialogTitle>{state.titleText}</DialogTitle>
+            <DialogTitle id="modal-title">{state.titleText}</DialogTitle>
             <DialogContent>
                 {
                     ( state.status === REQUEST_STATUS.IDLE ) &&
                     <RequestForm
+                        id="modal-form"
                         fields={fields}
                         submitRequest={submitRequest}
                     />
@@ -185,15 +191,16 @@ export const RequestFormModal: FC<RequestFormModalProps> = ({
                         <div>
                             <p>{state.bodyText}</p>
                             {state.status === REQUEST_STATUS.PENDING &&
-                                <div style={{display: "flex", justifyContent: "space-around"}}>
+                                <div className="loader-wrapper">
                                     <ClipLoader color={"#465461"} loading={state.status === REQUEST_STATUS.PENDING} size={150} />
                                 </div>
                             }
                             <Button
+                                data-testid="modal-btn"
                                 disabled={state.status===REQUEST_STATUS.PENDING}
                                 variant="contained"
-                            style={{ textTransform: "none", padding: "10px 40px", width: "100%", marginTop: "20px" }}
-                            onClick={state.buttonAction}
+                                className="form-btn"
+                                onClick={state.buttonAction}
                             >
                                 {state.buttonText}
                             </Button>
