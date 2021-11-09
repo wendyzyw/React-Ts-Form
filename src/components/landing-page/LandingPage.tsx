@@ -1,9 +1,10 @@
 
 import { RequestFormModal } from "../request-form-modal/RequestFormModal";
 import styled from '@emotion/styled'
+import backgroundImg from '../../assets/pictures/background.jpg';
 
 const Container = styled.div`
-    background-image: url('././assets/pictures/background.jpg');
+    background-image: url(${backgroundImg});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
